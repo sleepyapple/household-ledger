@@ -330,4 +330,10 @@
 
   resetForm();
   render();
+
+  if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
+    navigator.serviceWorker.register('sw.js').catch(() => {});
+  }
+  // 저장소가 브라우저에 의해 자동 정리되지 않도록 요청
+  if (navigator.storage && navigator.storage.persist) navigator.storage.persist().catch(() => {});
 })();
