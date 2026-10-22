@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>나의 가계부</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="topbar">
+    <h1>나의 가계부</h1>
+    <div class="month-nav">
+      <button id="prevMonth" aria-label="이전 달">‹</button>
+      <span id="monthLabel"></span>
+      <button id="nextMonth" aria-label="다음 달">›</button>
+    </div>
+    <button id="openSettings" class="ghost" aria-label="설정">⚙</button>
+  </header>
+
+  <main>
+    <section class="summary">
+      <div class="card"><span class="label">수입</span><span id="sumIncome" class="value income"></span></div>
+      <div class="card"><span class="label">지출</span><span id="sumExpense" class="value expense"></span></div>
+      <div class="card"><span class="label">잔액</span><span id="sumBalance" class="value"></span></div>
+      <div class="card budget">
+        <span class="label">예산 <small id="budgetText"></small></span>
+        <div class="bar"><div id="budgetBar"></div></div>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2 id="formTitle">내역 추가</h2>
+      <form id="txForm" autocomplete="off">
+        <div class="type-toggle">
+          <label><input type="radio" name="type" value="expense" checked /><span>지출</span></label>
+          <label><input type="radio" name="type" value="income" /><span>수입</span></label>
+        </div>
+        <div class="grid">
+          <label>날짜<input type="date" id="fDate" required /></label>
+          <label>금액<input type="text" id="fAmount" inputmode="numeric" placeholder="0" required /></label>
+          <label>카테고리<select id="fCategory"></select></label>
+          <label>결제수단<select id="fMethod"></select></label>
+          <label class="wide">메모<input type="text" id="fMemo" maxlength="100" placeholder="예: 점심 김밥" /></label>
+        </div>
+        <div class="actions">
+          <button type="submit" id="submitBtn">추가</button>
+          <button type="button" id="cancelEdit" class="ghost" hidden>취소</button>
+        </div>
+      </form>
+    </section>
+
+    <section class="panel">
+      <h2>카테고리별 지출</h2>
+      <div class="chart-wrap">
+        <svg id="donut" viewBox="0 0 120 120" aria-hidden="true"></svg>
+        <ul id="catList" class="cat-list"></ul>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="list-head">
+        <h2>내역</h2>
+        <div class="filters">
+          <select id="filterType">
+            <option value="all">전체</option>
+            <option value="expense">지출</option>
+            <option value="income">수입</option>
+          </select>
+          <input type="search" id="filterText" placeholder="검색" />
+        </div>
+      </div>
+      <div id="txList"></div>
+    </section>
+  </main>
+
+  <dialog id="settings">
+    <form method="dialog" class="settings-body">
+      <h2>설정</h2>
+      <label>월 예산 (원)<input type="text" id="sBudget" inputmode="numeric" placeholder="0 = 사용 안 함" /></label>
+
+      <h3>지출 카테고리</h3>
+      <div id="expenseCats" class="chips"></div>
+      <div class="add-row"><input type="text" id="newExpenseCat" placeholder="새 카테고리" /><button type="button" data-add="expense">추가</button></div>
+
+      <h3>수입 카테고리</h3>
+      <div id="incomeCats" class="chips"></div>
+      <div class="add-row"><input type="text" id="newIncomeCat" placeholder="새 카테고리" /><button type="button" data-add="income">추가</button></div>
+
+      <h3>결제수단</h3>
+      <div id="methods" class="chips"></div>
+      <div class="add-row"><input type="text" id="newMethod" placeholder="새 결제수단" /><button type="button" data-add="method">추가</button></div>
+
+      <h3>데이터</h3>
+      <p class="hint">데이터는 이 브라우저에만 저장됩니다. 주기적으로 백업하세요.</p>
+      <div class="data-btns">
+        <button type="button" id="exportJson">백업 (JSON)</button>
+        <button type="button" id="importJsonBtn">복원 (JSON)</button>
+        <button type="button" id="exportCsv">이번 달 CSV</button>
+        <button type="button" id="resetAll" class="danger">전체 삭제</button>
+        <input type="file" id="importJson" accept="application/json" hidden />
+      </div>
+
+      <div class="actions"><button value="close" id="saveSettings">닫기</button></div>
+    </form>
+  </dialog>
+
+  <script src="app.js"></script>
+</body>
+</html>
